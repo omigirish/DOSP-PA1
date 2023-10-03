@@ -15,6 +15,13 @@ let client () =
         let reader = new StreamReader(stream)
         let writer = new StreamWriter(stream)
 
+        writer.WriteLine("Hi!")
+        let data=reader.ReadLine()
+        if data="Hello!" then
+            printfn "Received Hello! from Server"
+        else
+            printfn "Network Error"
+
         let rec sendReceive () =
             printf "Enter a message (or 'exit' to quit): "
             let message = Console.ReadLine()

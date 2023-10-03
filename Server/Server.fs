@@ -15,12 +15,29 @@ let server () =
         let stream: NetworkStream = client.GetStream()
         let reader: StreamReader = new System.IO.StreamReader(stream)
         let writer: StreamWriter = new System.IO.StreamWriter(stream)
+        
         async {
+
+            writer.WriteLine("Hello!")
+            writer.Flush()
             while true do
                 let data = reader.ReadLine()
                 let parts = data.Split(' ')
-                if parts.Length < 3 || parts.Length > 6 then
-                    writer.WriteLine("-1") // Incorrect format
+
+                if parts.Length=0 then
+                    writer.WriteLine("-1") // Incorrect Operation Command
+
+                elif parts.[0]="bye" then
+                    writer.WriteLine("-5")
+                    writer.Flush()
+                    client.Close()
+
+                elif parts.[0]="terminate" then
+                    writer.WriteLine("-5") // Terminate client connection
+                    writer.Flush()
+                    client.Close()
+                    Environment.Exit(0)
+
                 else
                     let command = parts.[0]
                     let operands = List.map int (Array.toList parts.[1..])
@@ -30,8 +47,6 @@ let server () =
                         | "subtract" -> MathOperations.subtract operands
                         | "multiply" -> MathOperations.multiply operands
                         | "divide" -> MathOperations.divide operands
-                        | "terminate" -> -5
-                        | "exit" -> -5 
                         | _ -> -1 // Invalid command  
                     printfn "Returning result %d" result
                     writer.WriteLine(result.ToString())
@@ -40,7 +55,6 @@ let server () =
         
     let rec acceptClients () =
         let client = listener.AcceptTcpClient()
-        printfn "Client connected"
         let clientTask = async {
             do! handleClientAsync client
         }
