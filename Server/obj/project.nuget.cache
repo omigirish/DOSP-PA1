@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "nD3IzfIrrAzEEXWZKRTj4eh8No0GPDvmKSCR6J/9Ymz4Z+c5Zdn24cciuIqN/03oiZ7ZjrBxS4izzb3731IVCg==",
+  "success": true,
+  "projectFilePath": "/Users/girishsalunke/UF/DOSP/PA1/Server/Server.fsproj",
+  "expectedPackageFiles": [
+    "/Users/girishsalunke/.nuget/packages/fsharp.core/7.0.400/fsharp.core.7.0.400.nupkg.sha512"
+  ],
+  "logs": []
+}
