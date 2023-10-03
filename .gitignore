@@ -1,0 +1,5 @@
+.DS_Store
+Client/bin/
+Client/obj/
+Server/bin/
+Server/obj/
