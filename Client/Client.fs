@@ -15,24 +15,29 @@ let client () =
         let reader = new StreamReader(stream)
         let writer = new StreamWriter(stream)
 
-        writer.WriteLine("Hi!")
-        let data=reader.ReadLine()
-        if data="Hello!" then
-            printfn "Received Hello! from Server"
-        else
-            printfn "Network Error"
-
         let rec sendReceive () =
-            printf "Enter a message (or 'exit' to quit): "
+            printf "Enter a command: "
             let message = Console.ReadLine()
-            if message.ToLower() = "exit" then
+            printfn "Sending Command: %s" message
+            writer.WriteLine(message)
+            writer.Flush()
+            let data = reader.ReadLine()
+            
+            if data="-1" then
+                printfn "Incorrect operation command: The command specified is incorrect"
+            elif data="-2" then
+                printfn "Number of inputs is less than two."
+            elif data="-3" then
+                printfn "Number of inputs is more than four."
+            elif data="-4" then
+                printfn "One or more of the inputs contain(s) non-number(s)."
+            elif data="-5" then
                 client.Close()
+                printfn "Terminating Connection"
+                Environment.Exit(0)
             else
-                writer.WriteLine(message)
-                writer.Flush()
-                let data = reader.ReadLine()
                 printfn "Received: %s" data
-                sendReceive()
+            sendReceive()
 
         sendReceive()
     with
