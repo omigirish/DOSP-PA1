@@ -1,5 +1,5 @@
 .DS_Store
-Client/bin/
-Client/obj/
-Server/bin/
-Server/obj/
+/Socket/Client/bin
+/Socket/Client/obj
+/Socket/Server/bin
+/Socket/Server/obj
