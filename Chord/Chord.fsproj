@@ -6,7 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="SupportFunctions.fs" />
+    <Compile Include="Vars.fs"/>
+    <Compile Include="SupportFunctions.fs"/>
+    <Compile Include="ChordMessageTypes.fs"/>
+    <Compile Include="Node.fs"/>
+    <Compile Include="Simulator.fs"/>
     <Compile Include="Program.fs" />
   </ItemGroup>
 

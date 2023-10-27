@@ -3,3 +3,7 @@
 /Socket/Client/obj
 /Socket/Server/bin
 /Socket/Server/obj
+/.vscode
+/Chord/obj
+/Chord/bin
+.fake

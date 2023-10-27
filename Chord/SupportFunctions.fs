@@ -5,22 +5,25 @@ open System.IO
 
 type KeyValue = { Key: string; Value: string }
 
-// SHA Hash generator for a 20 bit identifier
+open System.Security.Cryptography
+
+// SHA Hash generator for a 20-bit identifier
 let getHash(key: int) =
     let bytesArr = BitConverter.GetBytes(key)
-    use sha1 = new SHA1CryptoServiceProvider() // Create a SHA-1 hash algorithm instance
+    // Create a SHA-1 hash algorithm instance
+    use sha1 = SHA1.Create() 
     let hash = sha1.ComputeHash(bytesArr)
-    
     // Convert the hash bytes to an integer
     let hashInt = BitConverter.ToInt32(hash, 0)
-    
-    // Extract the first 20 bits
+    // Extract the first 20 bits using bitwise AND with a bit mask
     let maskedHash = hashInt &&& ((1 <<< 20) - 1)
-    
     // Convert the masked hash to a decimal representation
-    let decimalValue = Convert.ToInt64(maskedHash)
-    
+    let decimalValue = int64 maskedHash   
     decimalValue
+
+let generateHash(key: int) =
+    let hash = SHA1.Create().ComputeHash(BitConverter.GetBytes(key))
+    BitConverter.ToString(hash).Replace("-", "").ToLower()
 
 
 // Function to read the CSV file and parse key-value pairs
