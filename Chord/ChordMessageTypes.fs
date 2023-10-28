@@ -1,18 +1,22 @@
 
 module ChordMessageTypes
 open Akka.Actor
+open System.Collections.Generic
 
-// Type definitions
+let mutable KeyValuePairs = Dictionary<int64, string>()
+type KeyValue = { Key: int64; Value: string }
+
+// Define message types that the actors will send and receive.
+// Messages sent by the nodes in the Chord
 type NodeMessage =
-    | Create of (int * IActorRef)
-    | Join of (int * IActorRef * int * IActorRef)
-    | Lookup of (int * int * IActorRef)
-    | AddInFingerTable of int 
-    | Done
+    | Create  // Create a Node
+    | Join of (int * IActorRef)  // Join a node into an existing Chord Ring
+    | Lookup of string  // Lookup a given key
+    | FindSuccessor of (int * IActorRef) 
+    | UpdateSuccessor of (int * IActorRef) 
+    | AssignKey of KeyValue  // Assign Key-Value Pair to Node
+    | Notify of (int* IActorRef)
+    | SendPredecessor 
 
-type SimulatorMessage = 
-    | CreateChord
-    | JoinChord
-    | CreateFingerTable
-    | Lookups
-    | FoundKey of (IActorRef * int * int * IActorRef)
+type ResponseMessages =
+    | Actor of (int* IActorRef)

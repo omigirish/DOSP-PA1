@@ -3,7 +3,7 @@ open System
 open System.Security.Cryptography
 open System.IO
 
-type KeyValue = { Key: string; Value: string }
+type KeyValue = { Key: int64; Value: string }
 
 open System.Security.Cryptography
 
@@ -35,7 +35,8 @@ let readCsvFile (filePath: string) =
         |> Seq.map (fun line ->
             let parts = line.Split(',')
             if parts.Length = 2 then
-                { Key = parts.[0].Trim(); Value = parts.[1].Trim() }
+                { Key = int64 (parts.[0].Trim()); Value = parts.[1].Trim() }
+
             else
                 failwith "Invalid CSV format"
         )
