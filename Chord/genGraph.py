@@ -15,7 +15,6 @@ for i in range(1, n + 1, interval):
     result = subprocess.run(["dotnet", "run", str(i), f"{req}"], capture_output=True, text=True)
     data.append(result.stdout)
 
-
 # Read data from the CSV file
 df = pd.read_csv("output.csv")
 
@@ -26,5 +25,5 @@ plt.ylabel("AverageHops")
 plt.title("NumNodes vs AverageHops")
 plt.grid(True)
 # Save the graph as a PNG image
-plt.savefig(f"output_graph_{n}_{req}.png")
+plt.savefig(f"output_graph.png")
 plt.show()

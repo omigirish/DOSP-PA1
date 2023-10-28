@@ -70,7 +70,7 @@ let main argv =
     if Array.length argv = 2 then
         numNodes <- int argv.[0] 
         numRequests <- int argv.[1] 
-        printfn "Simulating Chord Protocol for %d nodesList, where each node sends %d requests....." numNodes numRequests
+        printfn "Simulating Chord Protocol for %d nodes, where each node sends %d requests....." numNodes numRequests
         
         //Create the Chord Ring
         CreateChord()
