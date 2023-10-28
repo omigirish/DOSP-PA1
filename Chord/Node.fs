@@ -18,44 +18,45 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
 
         let! message = mailbox.Receive()
 
-        match box message with
-        | :? string as requestData->
+        match message with
+        | RequestData requestData->
             let content = System.Text.Encoding.ASCII.GetBytes requestData
             let bytes = SHA1.Create().ComputeHash(content)
             let targetKey = (int bytes.[bytes.Length-1]) + (int bytes.[bytes.Length-2]*(pown 2 8))
             let request = {TargetKey=targetKey; TargetKeyIndex=(-1); RequesterNodeId=Id; Hop=0}
-            mailbox.Self<!request
+            mailbox.Self<! RequestInfo request
 
-        | :? int as request ->
+        | Request request->
+            // Request 1 triggers Stabilize
             if request=1 then 
                 let successorNode = system.ActorSelection("akka://ChordSimulation/user/"+("Node:" + (string successorId)))
-                let Stabilize = {RequesterNodeId=Id}
-                successorNode <! Stabilize
+                let stabilize = {RequesterNodeId=Id}
+                successorNode <! Stabilize stabilize
+            // Request 2 triggers FixFingers
             else 
                 if currentFinger>m then
                     currentFinger <- 1
                 let fixFingerRequest = {TargetFinger=FingerTable.[currentFinger-1].[0]; Next=currentFinger; RequesterNodeId=Id}
-                mailbox.Self <! fixFingerRequest
+                mailbox.Self <! FixFinger fixFingerRequest
                 currentFinger <- currentFinger+1
 
-        | :? RequestInfo as requestInfo ->
+        | RequestInfo requestInfo ->
             let targetKey = requestInfo.TargetKey
             let requesterNodeId = requestInfo.RequesterNodeId
             let targetKeyIndex = requestInfo.TargetKeyIndex
             let mutable hop = requestInfo.Hop
-
+   
             let requesterNode = system.ActorSelection("akka://ChordSimulation/user/"+( "Node:" + (string requesterNodeId)))
             if hop<>(-1) then
                 hop <- hop+1
-
+                
             if Id=successorId || targetKey=Id then 
                 let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex;ResultNodeId=Id; Hop=hop}
-                requesterNode <! resultInfo
+                requesterNode <! ResultInfo resultInfo       
 
-            elif (Id<successorId && targetKey>Id && targetKey<=successorId)
-                ||(Id>successorId && (targetKey>Id || targetKey<=successorId)) then
+            elif (Id<successorId && targetKey>Id && targetKey<=successorId)||(Id>successorId && (targetKey>Id || targetKey<=successorId)) then
                 let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex; ResultNodeId=successorId; Hop=hop}
-                requesterNode <! resultInfo
+                requesterNode <! ResultInfo resultInfo
 
             else 
                 let mutable countdown = m-1
@@ -68,14 +69,15 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                        ||(Id>tempFingerNodeId && (targetKey>=tempFingerNodeId && Id>targetKey)) then
                         let tempFingerNode = system.ActorSelection("akka://ChordSimulation/user/"+( "Node:" + (string tempFingerNodeId)))
                         let forwardRequest = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex; RequesterNodeId=requesterNodeId; Hop=hop}
-                        tempFingerNode <! forwardRequest
+                        tempFingerNode <! RequestInfo forwardRequest
                         breakLoop <- true
 
                     elif Id=tempFingerNodeId then
                         let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex;ResultNodeId=tempFingerNodeId; Hop=hop}
-                        requesterNode <! resultInfo
+                        requesterNode <! ResultInfo resultInfo
                     countdown <- countdown-1
-        | :? ResultInfo as resultInfo ->
+
+        | ResultInfo resultInfo ->
             let targetKeyIndex = resultInfo.TargetKeyIndex
             let resultNodeId = resultInfo.ResultNodeId
             let hop = resultInfo.Hop 
@@ -86,7 +88,8 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
 
                 if mssgCount=numRequests then
                     let SimulateNode = system.ActorSelection("akka://ChordSimulation/user/Simulate")
-                    SimulateNode <! hopCount
+                    SimulateNode <! UpdateHops (Id,hopCount)
+                    // printfn "Node-%d, Avg hops%f" Id ((float hopCount)/ (float numRequests)) 
                 
             elif targetKeyIndex<>(-1) then
 
@@ -94,7 +97,7 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                     successorId <- resultNodeId
                 FingerTable.[targetKeyIndex-1].[1] <- resultNodeId
 
-        | :? FixFinger as fixFinger ->
+        | FixFinger fixFinger ->
             let targetFinger = fixFinger.TargetFinger
             let Next = fixFinger.Next
             let requesterNodeId = fixFinger.RequesterNodeId
@@ -102,11 +105,13 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
             let requesterNode = system.ActorSelection("akka://ChordSimulation/user/"+( "Node:" + (string requesterNodeId)))
             if Id=successorId || targetFinger=Id then 
                 let resultInfo = {TargetFinger=targetFinger; Next=Next;ResultNodeId=Id}
-                requesterNode <! resultInfo
+                requesterNode <! FixFingerRes resultInfo
+
             elif (Id<successorId && targetFinger>Id && targetFinger<=successorId)
                 ||(Id>successorId && (targetFinger>Id || targetFinger<=successorId)) then
                 let resultInfo = {TargetFinger=targetFinger; Next=Next;ResultNodeId=successorId}
-                requesterNode <! resultInfo
+                requesterNode <! FixFingerRes resultInfo
+
             else 
                 let mutable countdown = m-1
                 let mutable breakLoop = false
@@ -116,27 +121,27 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                        ||(Id>tempFingerNodeId && (targetFinger>=tempFingerNodeId && Id>targetFinger)) then
                         let tempFingerNode = system.ActorSelection("akka://ChordSimulation/user/"+ ( "Node:" + (string tempFingerNodeId)))
                         let forwardRequest = {TargetFinger=targetFinger; Next=Next; RequesterNodeId=requesterNodeId}
-                        tempFingerNode <! forwardRequest
+                        tempFingerNode <! FixFinger forwardRequest
                         breakLoop <- true
                     elif Id=tempFingerNodeId then
                         let resultInfo = {TargetFinger=targetFinger; Next=Next;ResultNodeId=tempFingerNodeId}
-                        requesterNode <! resultInfo
+                        requesterNode <! FixFingerRes resultInfo
                     countdown <- countdown-1
 
-        | :? FixFingerRes as fixFingerRes ->
+        | FixFingerRes fixFingerRes ->
             let Next = fixFingerRes.Next
             let resultNodeId = fixFingerRes.ResultNodeId
             FingerTable.[Next-1].[1] <- resultNodeId
 
-        | :? Stabilize as stabilize ->
+        | Stabilize stabilize ->
             let requesterNodeId = stabilize.RequesterNodeId
             let requesterNode = system.ActorSelection("akka://ChordSimulation/user/"+("Node:" + (string requesterNodeId)))
             if predecessorId=(-1) then
                 predecessorId <- Id
-            let StabilizeResponse = {PotentialSuccessor=predecessorId}
-            requesterNode <! StabilizeResponse
+            let stabilizeResponse = {PotentialSuccessor=predecessorId}
+            requesterNode <! StabilizeResponse stabilizeResponse
 
-        | :? StabilizeResponse as stabilizeResponse ->
+        | StabilizeResponse stabilizeResponse ->
             let potentialSuccessor = stabilizeResponse.PotentialSuccessor
             if potentialSuccessor<>successorId then
                 if Id=successorId then
@@ -144,11 +149,11 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                 if (Id<successorId && potentialSuccessor>Id && potentialSuccessor<successorId) 
                    || (Id>successorId && (potentialSuccessor>Id || potentialSuccessor<successorId))then
                     successorId <- potentialSuccessor
-            let Notify = {PotentialPredecessor=Id}
+            let notify = {PotentialPredecessor=Id}
             let successorNode = system.ActorSelection("akka://ChordSimulation/user/"+ ("Node:" + (string successorId)))
-            successorNode <! Notify
+            successorNode <! Notify notify
 
-        | :? Notify as notify ->
+        | Notify notify ->
             let potentialPredecessor = notify.PotentialPredecessor
             if predecessorId<>potentialPredecessor then
                 if Id=predecessorId || predecessorId=(-1) then
@@ -157,7 +162,7 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                    ||(predecessorId>Id && (potentialPredecessor>predecessorId || potentialPredecessor<Id))then
                     predecessorId <- potentialPredecessor 
 
-        | :? Init as initialization ->
+        | Init initialization ->
             let randomSearchNodeId = initialization.RandomSearchNodeId
             let firstOrNot = initialization.FirstOrNot
             for i in 1..m do
@@ -168,11 +173,7 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                 for i in 1..m do
                     let requestKey = (Id + pown 2 (i-1)) % (pown 2 m)
                     let requestInfo = {TargetKey=requestKey; TargetKeyIndex=i; RequesterNodeId=Id; Hop=(-1)}
-                    randomSearchNode <! requestInfo
-
-        | _ ->
-            printfn "Unkown message"
-            
+                    randomSearchNode <! RequestInfo requestInfo         
 
         return! loop()
     }

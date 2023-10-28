@@ -12,14 +12,14 @@ let mutable nodesList = []
 
 let Create(node,nodeId) =
     printfn "Creating First Node with Id %d..." nodeId
-    node <! {RandomSearchNodeId=(-1); FirstOrNot=true}
+    node <! Init { RandomSearchNodeId=(-1); FirstOrNot=true }
 
     // Add Node to nodesList
     nodeIdList <- nodeIdList @ [nodeId]
     // Periodically Call Stabilize()
-    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForStabilize,node,1)
+    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForStabilize,node,Request 1)
     // Periodically Call FixFingers()
-    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForFixfinger,node,2)
+    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForFixfinger,node,Request 2)
     //Pause for 25 ms
     Thread.Sleep(25)
 
@@ -27,14 +27,14 @@ let Join(node,nodeId) =
     printfn "Adding Node with Id %d..." nodeId
     let rnd = rand.Next(nodeIdList.Length)
     let rndNodeIndex = nodeIdList.[rnd]
-    node <! {RandomSearchNodeId=rndNodeIndex; FirstOrNot=false}
+    node <! Init {RandomSearchNodeId=rndNodeIndex; FirstOrNot=false}
 
     // Add Node to nodesList
     nodeIdList <- nodeIdList @ [nodeId]
     // Periodically Call Stabilize()
-    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForStabilize,node,1)
+    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForStabilize,node,Request 1)
     // Periodically Call FixFingers()
-    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForFixfinger,node,2)
+    system.Scheduler.ScheduleTellRepeatedly(startTime,delayTimeForFixfinger,node,Request 2)
     //Pause for 25 ms
     Thread.Sleep(25)
 
@@ -82,7 +82,7 @@ let main argv =
         for _ in 1..numRequests do
             for nodeIndex in 1..numNodes do
                 let data = ranStr 6
-                nodesList.[nodeIndex-1] <! data
+                nodesList.[nodeIndex-1] <! RequestData data
             Thread.Sleep(1000)
 
     else

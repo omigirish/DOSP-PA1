@@ -43,3 +43,18 @@ type Init = {
     RandomSearchNodeId : int
     FirstOrNot : bool
 }
+
+type NodeMessage =
+    | FixFinger of FixFinger
+    | FixFingerRes of FixFingerRes
+    | RequestInfo of RequestInfo
+    | ResultInfo of ResultInfo
+    | Notify of Notify
+    | Stabilize of Stabilize
+    | StabilizeResponse of StabilizeResponse
+    | Init of Init
+    | RequestData of string
+    | Request of int
+
+type SimulatorMessage =
+    | UpdateHops of (int*int)
