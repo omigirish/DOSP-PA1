@@ -1,15 +1,15 @@
 
 module ChordMessageTypes
 
-type FixFingerRequestInfo = {
+type FixFinger = {
     TargetFinger : int 
-    TargetFingerIndex : int 
+    Next : int 
     RequesterNodeId : int
 }
 
-type FixFingerResponseInfo = {
+type FixFingerRes = {
     TargetFinger : int 
-    TargetFingerIndex : int 
+    Next : int 
     ResultNodeId : int
 }
 
@@ -27,19 +27,19 @@ type ResultInfo = {
     Hop : int
 }
 
-type UpdatePredecessorNotification = {
+type Notify = {
     PotentialPredecessor : int
 }
 
-type StabilizeSuccessorRequest = {
+type Stabilize = {
     RequesterNodeId : int
 }
 
-type StabilizeSuccessorResponse = {
+type StabilizeResponse = {
     PotentialSuccessor : int
 }
 
-type InitializationInfo = {
+type Init = {
     RandomSearchNodeId : int
     FirstOrNot : bool
 }

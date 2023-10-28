@@ -5,36 +5,38 @@ open Config
 open System
 open System.Security.Cryptography
 
-
 let Node (nodeId:int) (mailbox: Actor<_>) = 
-    let myId = nodeId
-    let mutable curFixFingerIndex = 1
-    let mutable myFingerTable = Array.create m [||]
-    let mutable predecessorNodeId = -1
-    let mutable successorNodeId = nodeId
-    let mutable totalHop = 0
-    let mutable finisheMessage = 0
+    let Id = nodeId
+    let mutable currentFinger = 1
+    let mutable FingerTable = Array.create m [||]
+    let mutable predecessorId = -1
+    let mutable successorId = nodeId
+    let mutable hopCount = 0
+    let mutable mssgCount = 0
     
     let rec loop() = actor{
+
         let! message = mailbox.Receive()
+
         match box message with
         | :? string as requestData->
             let content = System.Text.Encoding.ASCII.GetBytes requestData
             let bytes = SHA1.Create().ComputeHash(content)
             let targetKey = (int bytes.[bytes.Length-1]) + (int bytes.[bytes.Length-2]*(pown 2 8))
-            let request = {TargetKey=targetKey; TargetKeyIndex=(-1); RequesterNodeId=myId; Hop=0}
+            let request = {TargetKey=targetKey; TargetKeyIndex=(-1); RequesterNodeId=Id; Hop=0}
             mailbox.Self<!request
+
         | :? int as request ->
             if request=1 then 
-                let successorNode = system.ActorSelection("akka://project3/user/"+("Node:" + (string successorNodeId)))
-                let stabilizeSuccessorRequest = {RequesterNodeId=myId}
-                successorNode <! stabilizeSuccessorRequest
+                let successorNode = system.ActorSelection("akka://ChordSimulation/user/"+("Node:" + (string successorId)))
+                let Stabilize = {RequesterNodeId=Id}
+                successorNode <! Stabilize
             else 
-                if curFixFingerIndex>m then
-                    curFixFingerIndex <- 1
-                let fixFingerRequest = {TargetFinger=myFingerTable.[curFixFingerIndex-1].[0]; TargetFingerIndex=curFixFingerIndex; RequesterNodeId=myId}
+                if currentFinger>m then
+                    currentFinger <- 1
+                let fixFingerRequest = {TargetFinger=FingerTable.[currentFinger-1].[0]; Next=currentFinger; RequesterNodeId=Id}
                 mailbox.Self <! fixFingerRequest
-                curFixFingerIndex <- curFixFingerIndex+1
+                currentFinger <- currentFinger+1
 
         | :? RequestInfo as requestInfo ->
             let targetKey = requestInfo.TargetKey
@@ -42,120 +44,130 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
             let targetKeyIndex = requestInfo.TargetKeyIndex
             let mutable hop = requestInfo.Hop
 
-            let requesterNode = system.ActorSelection("akka://project3/user/"+( "Node:" + (string requesterNodeId)))
+            let requesterNode = system.ActorSelection("akka://ChordSimulation/user/"+( "Node:" + (string requesterNodeId)))
             if hop<>(-1) then
                 hop <- hop+1
-            if myId=successorNodeId || targetKey=myId then 
-                let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex;ResultNodeId=myId; Hop=hop}
+
+            if Id=successorId || targetKey=Id then 
+                let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex;ResultNodeId=Id; Hop=hop}
                 requesterNode <! resultInfo
-            elif (myId<successorNodeId && targetKey>myId && targetKey<=successorNodeId)
-                ||(myId>successorNodeId && (targetKey>myId || targetKey<=successorNodeId)) then
-                let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex; ResultNodeId=successorNodeId; Hop=hop}
+
+            elif (Id<successorId && targetKey>Id && targetKey<=successorId)
+                ||(Id>successorId && (targetKey>Id || targetKey<=successorId)) then
+                let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex; ResultNodeId=successorId; Hop=hop}
                 requesterNode <! resultInfo
+
             else 
                 let mutable countdown = m-1
                 let mutable breakLoop = false
+
                 while countdown>=0 && not breakLoop do
-                    let tempFingerNodeId = myFingerTable.[countdown].[1]
-                    if (myId<tempFingerNodeId && (targetKey>=tempFingerNodeId || myId>targetKey)) 
-                       ||(myId>tempFingerNodeId && (targetKey>=tempFingerNodeId && myId>targetKey)) then
-                        let tempFingerNode = system.ActorSelection("akka://project3/user/"+( "Node:" + (string tempFingerNodeId)))
+                    let tempFingerNodeId = FingerTable.[countdown].[1]
+
+                    if (Id<tempFingerNodeId && (targetKey>=tempFingerNodeId || Id>targetKey)) 
+                       ||(Id>tempFingerNodeId && (targetKey>=tempFingerNodeId && Id>targetKey)) then
+                        let tempFingerNode = system.ActorSelection("akka://ChordSimulation/user/"+( "Node:" + (string tempFingerNodeId)))
                         let forwardRequest = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex; RequesterNodeId=requesterNodeId; Hop=hop}
                         tempFingerNode <! forwardRequest
                         breakLoop <- true
-                    elif myId=tempFingerNodeId then
+
+                    elif Id=tempFingerNodeId then
                         let resultInfo = {TargetKey=targetKey; TargetKeyIndex=targetKeyIndex;ResultNodeId=tempFingerNodeId; Hop=hop}
                         requesterNode <! resultInfo
                     countdown <- countdown-1
         | :? ResultInfo as resultInfo ->
-            let targetKey = resultInfo.TargetKey
             let targetKeyIndex = resultInfo.TargetKeyIndex
             let resultNodeId = resultInfo.ResultNodeId
             let hop = resultInfo.Hop 
+
             if hop<>(-1) then
-                totalHop <- totalHop + hop
-                finisheMessage <- finisheMessage + 1
-                if finisheMessage=numRequests then
-                    let calculateNode = system.ActorSelection("akka://project3/user/calculate")
-                    calculateNode <! totalHop
+                hopCount <- hopCount + hop
+                mssgCount <- mssgCount + 1
+
+                if mssgCount=numRequests then
+                    let SimulateNode = system.ActorSelection("akka://ChordSimulation/user/Simulate")
+                    SimulateNode <! hopCount
                 
             elif targetKeyIndex<>(-1) then
+
                 if targetKeyIndex=1 then
-                    successorNodeId <- resultNodeId
-                myFingerTable.[targetKeyIndex-1].[1] <- resultNodeId
+                    successorId <- resultNodeId
+                FingerTable.[targetKeyIndex-1].[1] <- resultNodeId
 
-        | :? FixFingerRequestInfo as fixFingerRequestInfo ->
-            let targetFinger = fixFingerRequestInfo.TargetFinger
-            let targetFingerIndex = fixFingerRequestInfo.TargetFingerIndex
-            let requesterNodeId = fixFingerRequestInfo.RequesterNodeId
+        | :? FixFinger as fixFinger ->
+            let targetFinger = fixFinger.TargetFinger
+            let Next = fixFinger.Next
+            let requesterNodeId = fixFinger.RequesterNodeId
 
-            let requesterNode = system.ActorSelection("akka://project3/user/"+( "Node:" + (string requesterNodeId)))
-            if myId=successorNodeId || targetFinger=myId then 
-                let resultInfo = {TargetFinger=targetFinger; TargetFingerIndex=targetFingerIndex;ResultNodeId=myId}
+            let requesterNode = system.ActorSelection("akka://ChordSimulation/user/"+( "Node:" + (string requesterNodeId)))
+            if Id=successorId || targetFinger=Id then 
+                let resultInfo = {TargetFinger=targetFinger; Next=Next;ResultNodeId=Id}
                 requesterNode <! resultInfo
-            elif (myId<successorNodeId && targetFinger>myId && targetFinger<=successorNodeId)
-                ||(myId>successorNodeId && (targetFinger>myId || targetFinger<=successorNodeId)) then
-                let resultInfo = {TargetFinger=targetFinger; TargetFingerIndex=targetFingerIndex;ResultNodeId=successorNodeId}
+            elif (Id<successorId && targetFinger>Id && targetFinger<=successorId)
+                ||(Id>successorId && (targetFinger>Id || targetFinger<=successorId)) then
+                let resultInfo = {TargetFinger=targetFinger; Next=Next;ResultNodeId=successorId}
                 requesterNode <! resultInfo
             else 
                 let mutable countdown = m-1
                 let mutable breakLoop = false
                 while countdown>=0 && not breakLoop do
-                    let tempFingerNodeId = myFingerTable.[countdown].[1]
-                    if (myId<tempFingerNodeId && (targetFinger>=tempFingerNodeId || myId>targetFinger)) 
-                       ||(myId>tempFingerNodeId && (targetFinger>=tempFingerNodeId && myId>targetFinger)) then
-                        let tempFingerNode = system.ActorSelection("akka://project3/user/"+ ( "Node:" + (string tempFingerNodeId)))
-                        let forwardRequest = {TargetFinger=targetFinger; TargetFingerIndex=targetFingerIndex; RequesterNodeId=requesterNodeId}
+                    let tempFingerNodeId = FingerTable.[countdown].[1]
+                    if (Id<tempFingerNodeId && (targetFinger>=tempFingerNodeId || Id>targetFinger)) 
+                       ||(Id>tempFingerNodeId && (targetFinger>=tempFingerNodeId && Id>targetFinger)) then
+                        let tempFingerNode = system.ActorSelection("akka://ChordSimulation/user/"+ ( "Node:" + (string tempFingerNodeId)))
+                        let forwardRequest = {TargetFinger=targetFinger; Next=Next; RequesterNodeId=requesterNodeId}
                         tempFingerNode <! forwardRequest
                         breakLoop <- true
-                    elif myId=tempFingerNodeId then
-                        let resultInfo = {TargetFinger=targetFinger; TargetFingerIndex=targetFingerIndex;ResultNodeId=tempFingerNodeId}
+                    elif Id=tempFingerNodeId then
+                        let resultInfo = {TargetFinger=targetFinger; Next=Next;ResultNodeId=tempFingerNodeId}
                         requesterNode <! resultInfo
                     countdown <- countdown-1
-        | :? FixFingerResponseInfo as fixFingerResponseInfo ->
-            let targetFinger = fixFingerResponseInfo.TargetFinger
-            let targetFingerIndex = fixFingerResponseInfo.TargetFingerIndex
-            let resultNodeId = fixFingerResponseInfo.ResultNodeId
-            myFingerTable.[targetFingerIndex-1].[1] <- resultNodeId
 
-        | :? StabilizeSuccessorRequest as stabilizeSuccessorRequest ->
-            let requesterNodeId = stabilizeSuccessorRequest.RequesterNodeId
-            let requesterNode = system.ActorSelection("akka://project3/user/"+("Node:" + (string requesterNodeId)))
-            if predecessorNodeId=(-1) then
-                predecessorNodeId <- myId
-            let stabilizeSuccessorResponse = {PotentialSuccessor=predecessorNodeId}
-            requesterNode <! stabilizeSuccessorResponse
-        | :? StabilizeSuccessorResponse as stabilizeSuccessorResponse ->
-            let potentialSuccessor = stabilizeSuccessorResponse.PotentialSuccessor
-            if potentialSuccessor<>successorNodeId then
-                if myId=successorNodeId then
-                    successorNodeId <- potentialSuccessor
-                if (myId<successorNodeId && potentialSuccessor>myId && potentialSuccessor<successorNodeId) 
-                   || (myId>successorNodeId && (potentialSuccessor>myId || potentialSuccessor<successorNodeId))then
-                    successorNodeId <- potentialSuccessor
-            let updatePredecessorNotification = {PotentialPredecessor=myId}
-            let successorNode = system.ActorSelection("akka://project3/user/"+ ("Node:" + (string successorNodeId)))
-            successorNode <! updatePredecessorNotification
-        | :? UpdatePredecessorNotification as updatePredecessorNotification ->
-            let potentialPredecessor = updatePredecessorNotification.PotentialPredecessor
-            if predecessorNodeId<>potentialPredecessor then
-                if myId=predecessorNodeId || predecessorNodeId=(-1) then
-                    predecessorNodeId <- potentialPredecessor 
-                if (predecessorNodeId<myId && potentialPredecessor>predecessorNodeId && potentialPredecessor<myId) 
-                   ||(predecessorNodeId>myId && (potentialPredecessor>predecessorNodeId || potentialPredecessor<myId))then
-                    predecessorNodeId <- potentialPredecessor 
+        | :? FixFingerRes as fixFingerRes ->
+            let Next = fixFingerRes.Next
+            let resultNodeId = fixFingerRes.ResultNodeId
+            FingerTable.[Next-1].[1] <- resultNodeId
 
-        | :? InitializationInfo as initialization ->
+        | :? Stabilize as stabilize ->
+            let requesterNodeId = stabilize.RequesterNodeId
+            let requesterNode = system.ActorSelection("akka://ChordSimulation/user/"+("Node:" + (string requesterNodeId)))
+            if predecessorId=(-1) then
+                predecessorId <- Id
+            let StabilizeResponse = {PotentialSuccessor=predecessorId}
+            requesterNode <! StabilizeResponse
+
+        | :? StabilizeResponse as stabilizeResponse ->
+            let potentialSuccessor = stabilizeResponse.PotentialSuccessor
+            if potentialSuccessor<>successorId then
+                if Id=successorId then
+                    successorId <- potentialSuccessor
+                if (Id<successorId && potentialSuccessor>Id && potentialSuccessor<successorId) 
+                   || (Id>successorId && (potentialSuccessor>Id || potentialSuccessor<successorId))then
+                    successorId <- potentialSuccessor
+            let Notify = {PotentialPredecessor=Id}
+            let successorNode = system.ActorSelection("akka://ChordSimulation/user/"+ ("Node:" + (string successorId)))
+            successorNode <! Notify
+
+        | :? Notify as notify ->
+            let potentialPredecessor = notify.PotentialPredecessor
+            if predecessorId<>potentialPredecessor then
+                if Id=predecessorId || predecessorId=(-1) then
+                    predecessorId <- potentialPredecessor 
+                if (predecessorId<Id && potentialPredecessor>predecessorId && potentialPredecessor<Id) 
+                   ||(predecessorId>Id && (potentialPredecessor>predecessorId || potentialPredecessor<Id))then
+                    predecessorId <- potentialPredecessor 
+
+        | :? Init as initialization ->
             let randomSearchNodeId = initialization.RandomSearchNodeId
             let firstOrNot = initialization.FirstOrNot
             for i in 1..m do
-                let insertKey = (myId + pown 2 (i-1)) % (pown 2 m)
-                myFingerTable.[i-1] <- [|insertKey;myId|]
+                let insertKey = (Id + pown 2 (i-1)) % (pown 2 m)
+                FingerTable.[i-1] <- [|insertKey;Id|]
             if not firstOrNot then
-                let randomSearchNode = system.ActorSelection("akka://project3/user/"+("Node:" + (string randomSearchNodeId)))
+                let randomSearchNode = system.ActorSelection("akka://ChordSimulation/user/"+("Node:" + (string randomSearchNodeId)))
                 for i in 1..m do
-                    let requestKey = (myId + pown 2 (i-1)) % (pown 2 m)
-                    let requestInfo = {TargetKey=requestKey; TargetKeyIndex=i; RequesterNodeId=myId; Hop=(-1)}
+                    let requestKey = (Id + pown 2 (i-1)) % (pown 2 m)
+                    let requestInfo = {TargetKey=requestKey; TargetKeyIndex=i; RequesterNodeId=Id; Hop=(-1)}
                     randomSearchNode <! requestInfo
 
         | _ ->

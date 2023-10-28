@@ -5,7 +5,7 @@ open System
 let mutable numNodes = 0|> int
 let mutable numRequests = 0 |> int
 
-let system = ActorSystem.Create("project3")
+let system = ActorSystem.Create("ChordSimulation")
 let rand = System.Random()
 
 let m = 20
