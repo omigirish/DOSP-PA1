@@ -52,7 +52,7 @@ type NodeMessage =
     | Notify of Notify
     | Stabilize of Stabilize
     | StabilizeResponse of StabilizeResponse
-    | CreateFingerTable of Init
+    | Init of Init
     | RequestData of string
     | Request of int
 

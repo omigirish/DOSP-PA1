@@ -2,8 +2,8 @@ module Node
 open Akka.FSharp
 open ChordMessageTypes
 open Config
+open System
 open System.Security.Cryptography
-open ChordMessageTypes
 
 let Node (nodeId:int) (mailbox: Actor<_>) = 
     let Id = nodeId
@@ -162,7 +162,7 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                    ||(predecessorId>Id && (potentialPredecessor>predecessorId || potentialPredecessor<Id))then
                     predecessorId <- potentialPredecessor 
 
-        | CreateFingerTable initialization ->
+        | Init initialization ->
             let randomSearchNodeId = initialization.RandomSearchNodeId
             let firstOrNot = initialization.FirstOrNot
             for i in 1..m do

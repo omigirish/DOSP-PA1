@@ -8,7 +8,7 @@ let mutable numRequests = 0 |> int
 let system = ActorSystem.Create("ChordSimulation")
 let rand = System.Random()
 
-let m = 5
+let m = 20
 
 let startTime = TimeSpan.FromSeconds(0.05)
 let delayTimeForStabilize = TimeSpan.FromSeconds(0.01)
