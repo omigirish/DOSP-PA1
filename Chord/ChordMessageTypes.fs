@@ -39,7 +39,7 @@ type StabilizeResponse = {
     PotentialSuccessor : int
 }
 
-type Init = {
+type Initialize = {
     RandomSearchNodeId : int
     FirstOrNot : bool
 }
@@ -52,7 +52,7 @@ type NodeMessage =
     | Notify of Notify
     | Stabilize of Stabilize
     | StabilizeResponse of StabilizeResponse
-    | CreateFingerTable of Init
+    | CreateFingerTable of Initialize
     | RequestData of string
     | Request of int
 

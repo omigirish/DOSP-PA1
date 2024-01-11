@@ -162,9 +162,9 @@ let Node (nodeId:int) (mailbox: Actor<_>) =
                    ||(predecessorId>Id && (potentialPredecessor>predecessorId || potentialPredecessor<Id))then
                     predecessorId <- potentialPredecessor 
 
-        | CreateFingerTable initialization ->
-            let randomSearchNodeId = initialization.RandomSearchNodeId
-            let firstOrNot = initialization.FirstOrNot
+        | CreateFingerTable Initializeialization ->
+            let randomSearchNodeId = Initializeialization.RandomSearchNodeId
+            let firstOrNot = Initializeialization.FirstOrNot
             for i in 1..m do
                 let insertKey = (Id + pown 2 (i-1)) % (pown 2 m)
                 FingerTable.[i-1] <- [|insertKey;Id|]

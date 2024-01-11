@@ -27,12 +27,6 @@ let SimulateNode (mailbox: Actor<_>) =
                     
                 appendDataToCsv numNodes numRequests avgHop
 
-
-
-
-
-
-
         return! loop()
     }
     loop()
