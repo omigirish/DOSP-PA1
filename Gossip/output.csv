@@ -1,0 +1,85 @@
+Algorithm,Topology,Nodes,ConvergenceTime
+Gossip,line,10,0.574000
+Gossip,full,10,0.305000
+Gossip,2D,9,0.214000
+Gossip,imp3D,8,0.274000
+Push Sum,line,10,15.315000
+Push Sum,full,10,1.995000
+Push Sum,2D,9,3.645000
+Push Sum,imp3D,8,2.025000
+Gossip,line,50,1.413000
+Gossip,full,50,0.274000
+Gossip,2D,49,0.543000
+Gossip,imp3D,64,0.453000
+Push Sum,line,50,177.644000
+Push Sum,full,50,2.504000
+Push Sum,2D,49,25.093000
+Push Sum,imp3D,64,5.683000
+Gossip,line,100,4.713000
+Gossip,full,100,0.335000
+Gossip,2D,100,0.752000
+Gossip,imp3D,125,0.423000
+Push Sum,line,100,484.723000
+Push Sum,full,100,2.623000
+Push Sum,2D,100,56.063000
+Push Sum,imp3D,125,7.423000
+Gossip,line,300,16.223000
+Gossip,full,300,0.474000
+Gossip,2D,289,1.324000
+Gossip,imp3D,343,0.515000
+Push Sum,line,300,543.923000
+Push Sum,full,300,2.883000
+Push Sum,2D,289,218.392000
+Push Sum,imp3D,343,8.983000
+Gossip,line,500,20.373000
+Gossip,full,500,0.483000
+Gossip,2D,484,1.623000
+Gossip,imp3D,512,0.603000
+Push Sum,line,500,824.534000
+Push Sum,full,500,2.864000
+Push Sum,2D,484,211.194000
+Push Sum,imp3D,512,9.365000
+Gossip,line,800,47.345000
+Gossip,full,800,0.526000
+Gossip,2D,784,2.755000
+Gossip,imp3D,729,0.656000
+Push Sum,line,800,731.895000
+Push Sum,full,800,2.895000
+Push Sum,2D,784,276.474000
+Push Sum,imp3D,729,10.485000
+Gossip,line,1000,38.703000
+Gossip,full,1000,0.514000
+Gossip,2D,1024,2.353000
+Gossip,imp3D,1000,0.673000
+Push Sum,line,1000,732.663000
+Push Sum,full,1000,2.954000
+Push Sum,2D,1024,330.043000
+Push Sum,imp3D,1000,10.094000
+Gossip,line,2000,111.084000
+Gossip,full,2000,0.596000
+Gossip,2D,2025,3.074000
+Gossip,imp3D,2197,0.745000
+Push Sum,line,2000,894.214000
+Push Sum,full,2000,3.069000
+Push Sum,2D,2025,349.224000
+Push Sum,imp3D,2197,12.363000
+Gossip,line,3000,144.104000
+Gossip,full,3000,0.615000
+Gossip,2D,3025,4.585000
+Gossip,imp3D,2744,0.793000
+Push Sum,line,3000,1195.044000
+Push Sum,full,3000,3.194000
+Push Sum,2D,3025,368.664000
+Push Sum,imp3D,2744,12.714000
+Gossip,line,5000,221.486000
+Gossip,full,5000,1.124000
+Gossip,2D,5041,5.144000
+Gossip,imp3D,4913,0.903000
+Push Sum,line,5000,1366.207000
+Push Sum,full,5000,4.215000
+Gossip,full,10000,2.749000
+Gossip,2D,10000,5.573000
+Gossip,imp3D,10648,2.605000
+Push Sum,2D,9,3.464000
+Gossip,line,10,0.574000
+Gossip,line,10,0.425000

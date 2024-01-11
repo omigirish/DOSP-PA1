@@ -1,0 +1,137 @@
+Algorithm,Topology,Nodes,ConvergenceTime
+Gossip,2D_Grid,9,0.183000
+Gossip,Imperfect_3D_Grid,8,0.124000
+Gossip,Full_Network,10,0.154000
+Gossip,2D_Grid,1024,2.883000
+Gossip,Imperfect_3D_Grid,1000,0.733000
+Gossip,Full_Network,1010,0.535000
+Gossip,2D_Grid,2025,2.533000
+Gossip,Imperfect_3D_Grid,2197,0.737000
+Gossip,Full_Network,2010,0.585000
+Gossip,2D_Grid,3025,4.394000
+Gossip,Imperfect_3D_Grid,2744,0.844000
+Gossip,Full_Network,3010,0.726000
+Gossip,2D_Grid,3969,4.714000
+Gossip,Imperfect_3D_Grid,4096,0.894000
+Gossip,Full_Network,4010,0.751000
+Gossip,2D_Grid,5041,5.003000
+Gossip,Imperfect_3D_Grid,4913,0.929000
+Gossip,Full_Network,5010,0.957000
+Gossip,2D_Grid,6084,5.643000
+Gossip,Imperfect_3D_Grid,5832,1.028000
+Gossip,Full_Network,6010,1.335000
+Gossip,2D_Grid,7056,6.954000
+Gossip,Imperfect_3D_Grid,6859,1.244000
+Gossip,Full_Network,7010,1.700000
+Gossip,2D_Grid,7921,6.383000
+Gossip,Imperfect_3D_Grid,8000,1.523000
+Gossip,Full_Network,8010,1.869000
+Gossip,2D_Grid,9025,6.004000
+Gossip,Imperfect_3D_Grid,9261,1.853000
+Gossip,Full_Network,9010,2.299000
+Gossip,2D_Grid,10000,6.182000
+Gossip,Imperfect_3D_Grid,10648,2.330000
+Gossip,Full_Network,10010,2.586000
+Gossip,2D_Grid,11025,9.872000
+Gossip,Imperfect_3D_Grid,10648,2.411000
+Gossip,Full_Network,11010,3.245000
+Gossip,2D_Grid,12100,10.193000
+Gossip,Imperfect_3D_Grid,12167,3.124000
+Gossip,Full_Network,12010,3.728000
+Gossip,2D_Grid,12996,8.686000
+Gossip,Imperfect_3D_Grid,13824,4.156000
+Gossip,Full_Network,13010,4.400000
+Gossip,2D_Grid,13924,9.527000
+Gossip,Imperfect_3D_Grid,13824,4.111000
+Gossip,Full_Network,14010,5.599000
+Gossip,2D_Grid,15129,8.105000
+Gossip,Imperfect_3D_Grid,15625,5.793000
+Gossip,Full_Network,15010,11.515000
+Gossip,2D_Grid,16129,10.345000
+Gossip,Imperfect_3D_Grid,15625,5.567000
+Gossip,Full_Network,16010,16.738000
+Gossip,2D_Grid,16900,12.097000
+Gossip,Imperfect_3D_Grid,17576,7.456000
+Gossip,Full_Network,17010,20.189000
+Gossip,2D_Grid,17956,11.665000
+Gossip,Imperfect_3D_Grid,17576,7.431000
+Gossip,Full_Network,18010,32.282000
+Gossip,2D_Grid,19044,13.213000
+Gossip,Imperfect_3D_Grid,19683,11.448000
+Gossip,Full_Network,19010,34.710000
+Gossip,2D_Grid,19881,14.302000
+Gossip,Imperfect_3D_Grid,19683,11.026000
+Gossip,Full_Network,20010,36.862000
+Gossip,2D_Grid,21025,16.874000
+Gossip,Imperfect_3D_Grid,21952,15.274000
+Gossip,Full_Network,21010,41.910000
+Gossip,2D_Grid,21904,20.007000
+Gossip,Imperfect_3D_Grid,21952,15.421000
+Gossip,Full_Network,22010,47.586000
+Gossip,2D_Grid,23104,23.546000
+Gossip,Imperfect_3D_Grid,21952,14.892000
+Gossip,Full_Network,23010,51.934000
+Gossip,2D_Grid,24025,24.885000
+Gossip,Imperfect_3D_Grid,24389,24.730000
+Gossip,Full_Network,24010,58.788000
+Gossip,2D_Grid,24964,29.949000
+Gossip,Imperfect_3D_Grid,24389,21.038000
+Gossip,Full_Network,25010,58.510000
+Gossip,2D_Grid,25921,33.774000
+Push Sum,Line,10,8.504000
+Push Sum,2D_Grid,9,3.494000
+Push Sum,Imperfect_3D_Grid,8,2.174000
+Push Sum,Full_Network,10,1.875000
+Push Sum,Line,1010,803.252000
+Push Sum,2D_Grid,1024,326.794000
+Push Sum,Imperfect_3D_Grid,1000,10.664000
+Push Sum,Full_Network,1010,3.013000
+Push Sum,Line,2010,1127.945000
+Push Sum,2D_Grid,2025,338.696000
+Push Sum,Imperfect_3D_Grid,2197,12.283000
+Push Sum,Full_Network,2010,3.084000
+Push Sum,Line,3010,1269.287000
+Push Sum,2D_Grid,3025,394.153000
+Push Sum,Imperfect_3D_Grid,2744,13.186000
+Push Sum,Full_Network,3010,3.144000
+Push Sum,Line,4010,1243.523000
+Push Sum,2D_Grid,3969,382.258000
+Push Sum,Imperfect_3D_Grid,4096,12.894000
+Push Sum,Full_Network,4010,3.454000
+Gossip,Line,10,0.366000
+Gossip,Line,10,0.365000
+Gossip,2D_Grid,9,0.244000
+Gossip,2D_Grid,9,0.184000
+Gossip,Line,10,0.544000
+Gossip,2D_Grid,9,0.215000
+Gossip,Imperfect_3D_Grid,8,0.184000
+Gossip,full,10,0.244000
+Gossip,full,10,0.184000
+Gossip,full,10,0.154000
+Gossip,full,10,0.183000
+Gossip,full,10,0.154000
+Gossip,full,10,0.154000
+Gossip,2D,10,0.304000
+Gossip,2D,9,0.214000
+Gossip,imp3d,8,0.184000
+Gossip,imp3d,8,0.184000
+Gossip,imp3d,8,0.185000
+Gossip,imp3d,8,0.125000
+Gossip,imp3d,8,0.184000
+Gossip,imp3d,8,0.155000
+Gossip,imp3d,8,0.185000
+Gossip,imp3d,8,0.126000
+Gossip,imp3d,8,0.184000
+Gossip,imp3d,8,0.154000
+Gossip,2D,9,0.155000
+Gossip,2D,9,0.335000
+Gossip,2D,9,0.214000
+Gossip,2D,9,0.274000
+Gossip,2D,9,0.214000
+Gossip,2D,9,0.184000
+Gossip,2D,9,0.184000
+Gossip,2D,9,0.184000
+Gossip,2D,9,0.275000
+Gossip,2D,9,0.154000
+Push Sum,2D,9,3.644000
+Gossip,line,25,0.754000

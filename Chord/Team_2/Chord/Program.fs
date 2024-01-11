@@ -12,7 +12,7 @@ let mutable nodesList = []
 
 let Create(node,nodeId) =
     printfn "Creating First Node with Id %d..." nodeId
-    node <! CreateFingerTable { RandomSearchNodeId=(-1); FirstOrNot=true }
+    node <! Initialize { RandomSearchNodeId=(-1); FirstOrNot=true }
 
     // Add Node to nodesList
     nodeIdList <- nodeIdList @ [nodeId]
@@ -27,7 +27,7 @@ let Join(node,nodeId) =
     printfn "Adding Node with Id %d..." nodeId
     let rnd = rand.Next(nodeIdList.Length)
     let rndNodeIndex = nodeIdList.[rnd]
-    node <! CreateFingerTable {RandomSearchNodeId=rndNodeIndex; FirstOrNot=false}
+    node <! Initialize {RandomSearchNodeId=rndNodeIndex; FirstOrNot=false}
 
     // Add Node to nodesList
     nodeIdList <- nodeIdList @ [nodeId]
