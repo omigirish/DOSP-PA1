@@ -92,61 +92,21 @@ The project utilizes several dependencies:
 ### Screenshots
 
 Screenshots demonstrating the program output for different scenarios and topologies:
-- dotnet run 10 line gossip
-![Output 1](./Gossip/Output1.png "Our Team Logo")
-- dotnet run 10 2D possum
-![Output 2](./Gossip/Output2.png "Our Team Logo")
-
-
-## Largest Network
-
-In our largest network tests, the Gossip algorithm with 10,000 nodes showed the Full Network topology as the most efficient, converging in 2.749 seconds, followed by the 2D Grid and Imperfect 3D Grid. For the Push Sum algorithm in a 5,000-node network, the Full Network again excelled with a convergence time of 4.215 seconds. These results highlight the Full Network's superior performance in large-scale networks.
-
-## Convergence Time Results
-
-Based on the various simulations that we ran nf the Gossip and Push Sum algorithms across various network topologies and node counts, the following trends and observations can be highlighted:
-1. The Gossip algorithm consistently shows faster convergence times compared to the Push Sum algorithm across all topologies.
-2. The Full Network topology yields the quickest convergence times for both algorithms, likely due to the direct connectivity between all nodes.
-3. As the number of nodes increases, there is a marked increase in convergence time for both algorithms. This trend is more pronounced in the Push Sum algorithm, indicating its sensitivity to network size.
-4. The Gossip algorithm scales better with the increasing number of nodes, especially in the Full Network and Imperfect 3D Grid topologies.
-5. In the Line topology, both algorithms exhibit a significant increase in convergence time as the node count grows, with the Push Sum algorithm being particularly affected. This indicates that the Line topology is less efficient for information propagation and sum calculation.
-6. The 2D Grid and Imperfect 3D Grid topologies offer a balance between the extremes of the Line and Full Network topologies, with moderate convergence times for both algorithms.
-
-
-## Results Visualization
-1. Convergence Time vs NumNodes for all Topologies in Gossip Algorithm
-
-![Output 3](./Gossip/Output3.png "Our Team Logo")
-
-2. Convergence Time vs NumNodes for all Topologies in Push Sum Algorithm
-
-![Output 3](./Gossip/Output4.png "Our Team Logo")
-
-3. Comparison of Various Topologies in Gossip Algorithm
-
-![Output 3](./Gossip/Output5.png "Our Team Logo")
-![Output 3](./Gossip/Output6.png "Our Team Logo")
-
-4. Comparison of Various Topologies in Push Sum Algorithm
-
-![Output 3](./Gossip/Output7.png "Our Team Logo")
-
-![Output 3](./Gossip/Output8.png "Our Team Logo")
-
-![Output 3](./Gossip/Output9.png "Our Team Logo")
-
+- dotnet run 25 line gossip
 
 
 ## Assumptions for the Simulation
 
-### Network Stability and Reliability
-- <b>Constant Network Topology:</b> It is assumed that the network topology (Full, Line, 2D Grid, Imperfect 3D Grid) remains constant throughout the simulation. No nodes are added or removed, and the connections between nodes do not change.
-- <b>Reliable Communication:</b> All messages sent between nodes are assumed to be reliably delivered without loss, corruption, or reordering.
-
-### Node Behavior and Capabilities
-- <b>Homogeneity of Nodes:</b> Each node in the network is assumed to have uniform capabilities in terms of processing power, memory, and network bandwidth.
-- <b>Synchronous Operation:</b> Nodes are assumed to operate in a synchronous manner, with a uniform delay for message processing and transmission.
+- Network stability and reliability are assumed throughout the simulation.
+- Nodes are considered to be homogeneous and operate synchronously.
 
 ## Conclusion
-In this project, we effectively implemented and analyzed the Gossip and Push Sum algorithms in distinct network topologies using F# and Akka. The findings reveal significant differences in the algorithms' performance across topologies like Full Network, Line, 2D Grid, and Imperfect 3D Grid. The Gossip algorithm proved faster in spreading information, while Push Sum was more efficient in calculating network-wide sums. These results underscore the critical influence of network structure on distributed algorithm efficiency. The project not only deepened our understanding of these algorithms but also demonstrated the practical capabilities of the Akka framework in a distributed setting.
+
+- The project demonstrates the effectiveness of the Gossip and Push-Sum algorithms in various network topologies.
+- Insights into the impact of network structure on the efficiency and scalability of these algorithms.
+
+## Contributions
+
+- Each team member's specific contributions to the project are detailed, highlighting their roles and responsibilities.
+
 
