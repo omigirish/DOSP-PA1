@@ -18,7 +18,7 @@ This repository contains implementations for three comprehensive programming ass
   - Creation of a network ring with dynamic node addition.
   - Implementation of scalable key lookup as described in the Chord paper.
   - Simulation of key lookups and calculation of average hops for requests.
-- **Implementation**: [Checkout Chord Protocol Implementation](https://github.com/omigirish/DOSP-PA1/tree/Gossip/Gossip#readme "Checkout Chord Protocol Implementation")
+- **Implementation**: [Checkout Chord Protocol Implementation](https://github.com/omigirish/DOSP-PA1/tree/Gossip/Chord#readme "Checkout Chord Protocol Implementation")
 
 ## Programming Assignment 3 (PA3)
 - **Objective**: Implementing Gossip and Push-Sum algorithms using the actor model in F#.
@@ -27,7 +27,7 @@ This repository contains implementations for three comprehensive programming ass
   - Development of a simulator for Gossip type algorithms based on actors written in F# using the Akka framework.
   - Experimentation with various network topologies: Full Network, 2D Grid, Line, Imperfect 3D Grid.
   - Analyzing convergence of algorithms in different network structures.
-- **Implementation**: [Checkout Gossip and Push Sum Implementation](https://github.com/omigirish/DOSP-PA1/tree/Gossip/Chord#readme "Checkout Gossip and Push Sum Implementation")
+- **Implementation**: [Checkout Gossip and Push Sum Implementation](https://github.com/omigirish/DOSP-PA1/tree/Gossip/Gossip#readme "Checkout Gossip and Push Sum Implementation")
 
 Please refer to the respective directories for each assignment for detailed documentation, source code, and analysis.
 
